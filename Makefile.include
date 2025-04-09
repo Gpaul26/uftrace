@@ -1,21 +1,37 @@
 #-*- mode: makefile -*-
-ifneq ($(findstring $(MAKEFLAGS),s),s)
-  ifneq ($(V),1)
-	QUIET_CC       = @echo '  CC       '$(patsubst $(objdir)/%,%,$@);
-	QUIET_CC_FPIC  = @echo '  CC FPIC  '$(patsubst $(objdir)/%,%,$@);
-	QUIET_AR       = @echo '  AR       '$(patsubst $(objdir)/%,%,$@);
-	QUIET_ASM      = @echo '  ASM      '$(patsubst $(objdir)/%,%,$@);
-	QUIET_LINK     = @echo '  LINK     '$(patsubst $(objdir)/%,%,$@);
-	QUIET_MKDIR    = @echo '  MKDIR    '$(patsubst $(objdir)/%,%,$@);
-	QUIET_GEN      = @echo '  GEN      '$(patsubst $(objdir)/%,%,$@);
-	QUIET_FLEX     = @echo '  FLEX     '$@;
-	QUIET_BISON    = @echo '  BISON    '$@;
-	QUIET_TEST     = @echo '  TEST     '$@;
 
-	QUIET_CLEAN    = @printf '  CLEAN    %s\n' $1;
-	QUIET_INSTALL  = @printf '  INSTALL  %s\n' $1;
-	QUIET_UNINSTALL= @printf '  REMOVE   %s\n' $1;
+# Quiet mode control: Enable quiet output unless 's' is in MAKEFLAGS or V=1 is set
+ifneq ($(filter s,$(MAKEFLAGS))$(if $(V),1),)
+  Q :=
+  QUIET_CC       = 
+  QUIET_CC_FPIC  = 
+  QUIET_AR       = 
+  QUIET_ASM      = 
+  QUIET_LINK     = 
+  QUIET_MKDIR    = 
+  QUIET_GEN      = 
+  QUIET_FLEX     = 
+  QUIET_BISON    = 
+  QUIET_TEST     = 
+  QUIET_CLEAN    = 
+  QUIET_INSTALL  = 
+  QUIET_UNINSTALL= 
+else
+  Q = @
+  # Build commands with consistent formatting
+  QUIET_CC       = @printf '  %-8s %s\n' "CC" "$(patsubst $(objdir)/%,%,$@)"
+  QUIET_CC_FPIC  = @printf '  %-8s %s\n' "CC FPIC" "$(patsubst $(objdir)/%,%,$@)"
+  QUIET_AR       = @printf '  %-8s %s\n' "AR" "$(patsubst $(objdir)/%,%,$@)"
+  QUIET_ASM      = @printf '  %-8s %s\n' "ASM" "$(patsubst $(objdir)/%,%,$@)"
+  QUIET_LINK     = @printf '  %-8s %s\n' "LINK" "$(patsubst $(objdir)/%,%,$@)"
+  QUIET_MKDIR    = @printf '  %-8s %s\n' "MKDIR" "$(patsubst $(objdir)/%,%,$@)"
+  QUIET_GEN      = @printf '  %-8s %s\n' "GEN" "$(patsubst $(objdir)/%,%,$@)"
+  QUIET_FLEX     = @printf '  %-8s %s\n' "FLEX" "$@"
+  QUIET_BISON    = @printf '  %-8s %s\n' "BISON" "$@"
+  QUIET_TEST     = @printf '  %-8s %s\n' "TEST" "$@"
 
-	Q = @
-  endif
+  # Non-build commands with consistent formatting
+  QUIET_CLEAN    = @printf '  %-8s %s\n' "CLEAN" "$1"
+  QUIET_INSTALL  = @printf '  %-8s %s\n' "INSTALL" "$1"
+  QUIET_UNINSTALL= @printf '  %-8s %s\n' "REMOVE" "$1"
 endif
